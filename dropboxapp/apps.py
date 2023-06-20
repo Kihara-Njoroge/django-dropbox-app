@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class DropboxConfig(AppConfig):
+class DropboxappConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
-    name = "dropbox"
+    name = "dropboxapp"
