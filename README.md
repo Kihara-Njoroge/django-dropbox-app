@@ -44,7 +44,7 @@ A django demo application that integrates with the Dropbox API. The app allows y
             - files.content.delete (to delete files from the Dropbox account)
         - Generate an access token for your app.
 
-    - Rename the `example.env` file to `.env`.
+    - Rename the `.env.example` file to `.env`.
 
     - Open the `.env` file and update the following configurations:
         - `DROPBOX_OAUTH2_TOKEN`: Paste the access token obtained from the Dropbox app.
