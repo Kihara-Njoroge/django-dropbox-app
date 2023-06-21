@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Authenticate{% endblock %}
+{% block content %}
+
+    <div class="container mt-2">
+        
+        <!-- Header ..................................................... -->
+        <div class="page-header">
+            <h2><i class='bi bi-dropbox'></i> Dropbox Access Request</h2>
+        </div>
+        <hr>
+        <p>This is a demo app that displays the contents of a Dropbox 
+           account and allows simple file operations, like downloading,uploading and deleting documents. 
+           In order to function, the app must have access to a Dropbox account.
+        </p>
+        <p>Click on the button below to request access to a Dropbox account.
+        </p>
+        <div class="text-center mt-3">
+            <a href="{{ url }}" class="btn btn-primary" role="button">
+                <i class="bi bi-key"></i> &nbsp; Request Access to Dropbox
+            </a>
+        </div>
+    </div>
+
+{% endblock %}
