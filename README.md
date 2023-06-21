@@ -1,5 +1,5 @@
 # django-dropbox-app
-A django demo application that integrates with the Dropbox API. The app allows you to display the contents of a Dropbox account and perform basic file operations such as downloading, uploading, and deleting files and folders. To use the app, you need to provide it with access to a Dropbox account.
+A django demo application that integrates with the Dropbox API. The app allows you to display the contents of a Dropbox account and perform basic file operations such as downloading, uploading, and deleting files and folders and creating new folders. To use the app, you need to provide it with access to a Dropbox account.
 
 ## Prerequisites
 - Python (version 3.6 or above) and pip installed on your system.
@@ -59,7 +59,7 @@ A django demo application that integrates with the Dropbox API. The app allows y
   ```
   2. Open your web browser and access the app at http://localhost:8000 or as per the URL displayed in the terminal.
   3. You will see a login page. Click on the "Allow" button to authenticate the app with your Dropbox account.
-  4. Once authenticated, you will be able to view the contents of your Dropbox account and perform file operations such as           downloading, uploading, and deleting files and folders.
+  4. Once authenticated, you will be able to view the contents of your Dropbox account and perform file operations such as           downloading, uploading, and deleting files and folders and create new folders.
 
 
 
