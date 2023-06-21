@@ -32,20 +32,23 @@ A django demo application that integrates with the Dropbox API. The app allows y
   ```bash
     $ pip install -r requirements.txt
   ```
-  6.Configuration
-    1.Create a Dropbox app and obtain the API credentials:
-      1.Go to the Dropbox App Console.
-      2.Choose the "Scoped access" option.
-      3.Select the following permissions:
-        .files.metadata.read (to read the contents of the Dropbox account)
-        .files.content.read (to download files from the Dropbox account)     
-        .files.content.write (to upload files to the Dropbox account)     
-        .files.content.delete (to delete files from the Dropbox account)  
-    2.Generate an access token for your app.      
-    3.Rename the example.env file to .env.
-    4.Open the .env file and update the following configurations:
-      .DROPBOX_OAUTH2_TOKEN: Paste the access token obtained from the Dropbox app.
-      .DROPBOX_APP_KEY: Paste the app key from the dropbox app.
+6. Configuration
+
+    - Create a Dropbox app and obtain the API credentials:
+        - Go to the [Dropbox App Console](https://www.dropbox.com/developers/apps/create).
+        - Choose the "Scoped access" option.
+        - Select the following permissions:
+            - files.metadata.read (to read the contents of the Dropbox account)
+            - files.content.read (to download files from the Dropbox account)
+            - files.content.write (to upload files to the Dropbox account)
+            - files.content.delete (to delete files from the Dropbox account)
+        - Generate an access token for your app.
+
+    - Rename the `example.env` file to `.env`.
+
+    - Open the `.env` file and update the following configurations:
+        - `DROPBOX_ACCESS_TOKEN`: Paste the access token obtained from the Dropbox app.
+
           
 ## Running the App
   1.Start the development server.
@@ -53,7 +56,7 @@ A django demo application that integrates with the Dropbox API. The app allows y
     $ python3 -m venv env
   ```
   2. Open your web browser and access the app at http://localhost:8000 or as per the URL displayed in the terminal.
-  3. You will see a login page. Click on the "Login with Dropbox" button to authenticate the app with your Dropbox account.
+  3. You will see a login page. Click on the "Allow" button to authenticate the app with your Dropbox account.
   4. Once authenticated, you will be able to view the contents of your Dropbox account and perform file operations such as           downloading, uploading, and deleting files and folders.
 
 
