@@ -47,7 +47,9 @@ A django demo application that integrates with the Dropbox API. The app allows y
     - Rename the `example.env` file to `.env`.
 
     - Open the `.env` file and update the following configurations:
-        - `DROPBOX_ACCESS_TOKEN`: Paste the access token obtained from the Dropbox app.
+        - `DROPBOX_OAUTH2_TOKEN`: Paste the access token obtained from the Dropbox app.
+        - `DROPBOX_APP_KEY`: Paste the app key obtained from the Dropbox app.
+
 
           
 ## Running the App
