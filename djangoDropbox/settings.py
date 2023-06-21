@@ -126,6 +126,3 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
-DROPBOX_OAUTH2_TOKEN= 'sl.BguEnfRaUJ5lgC7VDcnzadye0G-oW_rYZDpxkX06-_-K1IgqDhu2V6vZN3fhl0nf6WkpzlAgSZPKnbx-G7OrhyKeeBriQB4B2Rfx5Ugi3CHUhdofLwS8AB2Wo9SrFYo5zuUI1FIb5XNJ'
-DROPBOX_APP_KEY = 'djyezn2i4oov0cf'
-

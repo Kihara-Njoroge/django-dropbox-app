@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}Viewer{% endblock %}
+{% block title %}DropBox Demo App{% endblock %}
 {% block content %}
 
     <!-- New Folder Modal =============================================== -->
@@ -187,10 +187,6 @@
                         </a>
                     </div>
                     <div class='col-md-1 bg-light text-secondary text-center'>
-                        <a href="{% url 'file' file.url %}"
-                        class="text-decoration-none text-reset"-->
-                        <i class="text-primary bi bi-cloud-arrow-down-fill"></i>                     
-                    </a> 
                     <a href="{% url 'delete' file.url %}"
                     class="text-decoration-none text-reset"-->
                     <i class="text-danger bi bi-trash-fill"></i>                </a>                     

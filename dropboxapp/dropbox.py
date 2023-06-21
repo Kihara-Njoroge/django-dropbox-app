@@ -1,13 +1,3 @@
-# Dropbox storage class for Django pluggable storage system.
-# Author: Anthony Monthe <anthony.monthe@gmail.com>
-# License: BSD
-#
-# Usage:
-#
-# Add below to settings.py:
-# DROPBOX_OAUTH2_TOKEN = 'YourOauthToken'
-# DROPBOX_ROOT_PATH = '/dir/'
-
 from io import BytesIO
 from shutil import copyfileobj
 from tempfile import SpooledTemporaryFile
@@ -20,27 +10,28 @@ from django.core.files.base import File
 from django.core.files.storage import Storage
 from django.utils._os import safe_join
 from django.utils.deconstruct import deconstructible
+from decouple import config
 from dropbox import Dropbox
 from dropbox.exceptions import ApiError
 from dropbox.files import (
-    CommitInfo, FolderMetadata, UploadSessionCursor, WriteMode, 
+    CommitInfo, FolderMetadata, UploadSessionCursor, WriteMode,
 )
 
 _DEFAULT_TIMEOUT = 100
 _DEFAULT_MODE = 'add'
 
+
 def get_available_overwrite_name(name, max_length):
     if max_length is None or len(name) <= max_length:
         return name
 
-    # Adapted from Django
     dir_name, file_name = os.path.split(name)
     file_root, file_ext = os.path.splitext(file_name)
     truncation = len(name) - max_length
 
     file_root = file_root[:-truncation]
     if not file_root:
-        raise  SuspiciousFileOperation(
+        raise SuspiciousFileOperation(
             'Storage tried to truncate away entire filename "%s". '
             'Please make sure that the corresponding file field '
             'allows sufficient "max_length".' % name
@@ -65,15 +56,12 @@ class DropBoxFile(File):
     def _get_file(self):
         if self._file is None:
             self._file = SpooledTemporaryFile()
-            # As dropbox==9.3.0, the client returns a tuple
-            # (dropbox.files.FileMetadata, requests.models.Response)
             file_metadata, response = \
                 self._storage.client.files_download(self.name)
             if response.status_code == 200:
                 with BytesIO(response.content) as file_content:
                     copyfileobj(file_content, self._file)
             else:
-                # JIC the exception isn't catched by the dropbox client
                 raise DropBoxStorageException(
                     "Dropbox server returned a {} response when accessing {}"
                     .format(response.status_code, self.name)
@@ -89,19 +77,17 @@ class DropBoxFile(File):
 
 @deconstructible
 class DropBoxStorage(Storage):
-    """DropBox Storage class for Django pluggable storage system."""
     location = setting('DROPBOX_ROOT_PATH', '/')
-    oauth2_access_token = setting('DROPBOX_OAUTH2_TOKEN')
-    timeout = setting('DROPBOX_TIMEOUT', _DEFAULT_TIMEOUT)
-    write_mode = setting('DROPBOX_WRITE_MODE', _DEFAULT_MODE)
+    oauth2_access_token = config('DROPBOX_OAUTH2_TOKEN')
+    timeout = config('DROPBOX_TIMEOUT', _DEFAULT_TIMEOUT)
+    write_mode = config('DROPBOX_WRITE_MODE', _DEFAULT_MODE)
 
     CHUNK_SIZE = 4 * 1024 * 1024
 
     def __init__(self, oauth2_access_token=oauth2_access_token, root_path=location, timeout=timeout,
                  write_mode=write_mode):
         if oauth2_access_token is None:
-            raise ImproperlyConfigured("You must configure an auth token at"
-                                       "'settings.DROPBOX_OAUTH2_TOKEN'.")
+            raise ImproperlyConfigured("You must configure an auth token.")
 
         self.root_path = root_path
         self.write_mode = write_mode
@@ -159,7 +145,8 @@ class DropBoxStorage(Storage):
     def _save(self, name, content):
         content.open()
         if content.size <= self.CHUNK_SIZE:
-            self.client.files_upload(content.read(), self._full_path(name), mode=WriteMode(self.write_mode))
+            self.client.files_upload(content.read(), self._full_path(
+                name), mode=WriteMode(self.write_mode))
         else:
             self._chunked_upload(content, self._full_path(name))
         content.close()
@@ -187,10 +174,7 @@ class DropBoxStorage(Storage):
                 cursor.offset = content.tell()
 
     def get_available_name(self, name, max_length=None):
-        """Overwrite existing file with the same name."""
         name = self._full_path(name)
         if self.write_mode == 'overwrite':
             return get_available_overwrite_name(name, max_length)
         return super().get_available_name(name, max_length)
-
-

@@ -3,45 +3,26 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.conf import settings
 from django.urls import reverse
 from django.views.defaults import server_error
+from decouple import config
 from dropbox.exceptions import ApiError
 
 from .wrapper import DropboxWrapper
-
-dropbox = DropboxWrapper(settings.DROPBOX_APP_KEY)
-
-
+dropbox = DropboxWrapper(config("DROPBOX_APP_KEY"))
 
 def request_access(request):
-    '''Display the authorization request page.'''
     redirect = request.build_absolute_uri(reverse('confirm'))
     url = dropbox.request_access(request.session, redirect)
     context = {'url': url}
     return render(request, 'access.html', context)
 
-# ----------------------------------------------------------------------------
 def confirm_access(request):
-    '''Finish the authorization flow and redirect to listfolder.
-
-    This page is a redirection from the authorization request page.
-    '''
     if dropbox.conclude_access(request.GET):
         return HttpResponseRedirect(reverse('index'))
     return server_error(request)
 
 # ----------------------------------------------------------------------------
 def listfolder(request, url='', uploaded=None, created=None, deleted=None):
-    '''List all contents from a Dropbox folder.
-
-    This is the main page, that contains the links for file download, as well
-    forms for file upload and folder creation. All pages redirect here.
-    If there is no access to a Dropbox account, it redirects to the
-    authorization page.
-
-    Parameters:
-    url      : the current Dropbox folder being displayed
-    uploaded : the name of the last file uploaded, to be notified
-    created  : the name of the last folder created, to be notified
-    '''
+    '''List all contents from a Dropbox folder.'''
     if not dropbox.has_access():
         return HttpResponseRedirect(reverse('auth'))
 
@@ -66,7 +47,6 @@ def listfolder(request, url='', uploaded=None, created=None, deleted=None):
               }
     return render(request, 'index.html', context)
 
-# ----------------------------------------------------------------------------
 def download(request, name):
     if not dropbox.has_access():
         return HttpResponseRedirect(reverse('auth'))
@@ -77,7 +57,6 @@ def download(request, name):
     response['Content-Disposition'] = f'inline; filename={nice_name}'
     return response
     
-# ----------------------------------------------------------------------------
 def upload(request):
     if not dropbox.has_access():
         return HttpResponseRedirect(reverse('auth'))
@@ -89,7 +68,6 @@ def upload(request):
         return listfolder(None, url=path, uploaded=name)
     return HttpResponseRedirect(reverse('index'))
 
-# ----------------------------------------------------------------------------
 def newfolder(request):
     if not dropbox.has_access():
         return HttpResponseRedirect(reverse('auth'))
@@ -103,7 +81,6 @@ def newfolder(request):
         return listfolder(None, url=path, created=name)
     return HttpResponseRedirect(reverse('index'))
 
-# ----------------------------------------------------------------------------
 def delete(request, path):
     if not dropbox.has_access():
         return HttpResponseRedirect(reverse('auth'))
