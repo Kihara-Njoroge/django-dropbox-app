@@ -3,6 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.conf import settings
 from django.urls import reverse
 from django.views.defaults import server_error
+from dropbox.exceptions import ApiError
 
 from .wrapper import DropboxWrapper
 
@@ -28,7 +29,7 @@ def confirm_access(request):
     return server_error(request)
 
 # ----------------------------------------------------------------------------
-def listfolder(request, url='', uploaded=None, created=None):
+def listfolder(request, url='', uploaded=None, created=None, deleted=None):
     '''List all contents from a Dropbox folder.
 
     This is the main page, that contains the links for file download, as well
@@ -61,16 +62,12 @@ def listfolder(request, url='', uploaded=None, created=None):
                'current': levels[-1]['name'],
                'uploaded': uploaded,
                'created': created,
+               'deleted': deleted,
               }
     return render(request, 'index.html', context)
 
 # ----------------------------------------------------------------------------
 def download(request, name):
-    '''Download the named file from Dropbox.
-
-    If there is no access to a Dropbox account, it redirects to the
-    authorization page.
-    '''
     if not dropbox.has_access():
         return HttpResponseRedirect(reverse('auth'))
 
@@ -82,11 +79,6 @@ def download(request, name):
     
 # ----------------------------------------------------------------------------
 def upload(request):
-    '''Upload the file sent by POST to Dropbox.
-
-    Redirect to listfolder afterwards. If there is no access to a Dropbox 
-    account, it redirects to the authorization page.
-    '''
     if not dropbox.has_access():
         return HttpResponseRedirect(reverse('auth'))
 
@@ -99,11 +91,6 @@ def upload(request):
 
 # ----------------------------------------------------------------------------
 def newfolder(request):
-    '''Create the folder sent by POST in Dropbox.
-    
-    Redirect to listfolder afterwards. If there is no access to a Dropbox 
-    account, it redirects to the authorization page.
-    '''
     if not dropbox.has_access():
         return HttpResponseRedirect(reverse('auth'))
 
@@ -115,3 +102,19 @@ def newfolder(request):
         dropbox.create_folder(path=path, name=name)
         return listfolder(None, url=path, created=name)
     return HttpResponseRedirect(reverse('index'))
+
+# ----------------------------------------------------------------------------
+def delete(request, path):
+    if not dropbox.has_access():
+        return HttpResponseRedirect(reverse('auth'))
+
+    try:
+        dropbox.delete_file(path)
+        return listfolder(None,deleted=path)
+    except ApiError as e:
+        if e.error.is_path() and e.error.get_path().is_not_found():
+            # File not found
+            return HttpResponseRedirect(reverse('error'))
+    return HttpResponseRedirect(reverse('index'))
+
+
