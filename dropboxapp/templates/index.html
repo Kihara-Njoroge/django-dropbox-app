@@ -1,4 +1,4 @@
-{% extends 'viewer/base.html' %}
+{% extends 'base.html' %}
 {% block title %}Viewer{% endblock %}
 {% block content %}
 
@@ -95,7 +95,7 @@
             <!-- Current folder -->
             <h2>
                 {% if current == '' %} 
-                    <i class='bi bi-hdd'></i> Root
+                    <i class='bi bi-dropbox'></i> DropBox Demo App
                 {% else %}
                     <i class='bi bi-folder'></i> {{ current }}
                 {% endif %}

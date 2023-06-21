@@ -1,5 +1,8 @@
+import os
 from dropbox.files import FolderMetadata
 from dropbox.oauth import DropboxOAuth2Flow
+from django.core.exceptions import SuspiciousFileOperation
+
 
 from .dropbox import DropBoxStorage
 
@@ -145,8 +148,13 @@ class DropboxWrapper():
         upfile : the File object to be uploaded; its name is added to path 
                  in order to create its final name on Dropbox
         '''
-        name = ('/' if path == '' else ('/' + path + '/')) + upfile.name
-        self.storage.save(name, upfile)
+        name = os.path.basename(upfile.name)  # Remove the './' prefix from the name
+
+        # Concatenate the sanitized , upfile.name)
+        try:
+            self.storage.save(name, upfile)
+        except SuspiciousFileOperation as e:
+            pass
         return name
 
     # ........................................................................
