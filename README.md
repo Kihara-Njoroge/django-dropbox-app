@@ -2,9 +2,9 @@
 A django demo application that integrates with the Dropbox API. The app allows you to display the contents of a Dropbox account and perform basic file operations such as downloading, uploading, and deleting files and folders. To use the app, you need to provide it with access to a Dropbox account.
 
 ## Prerequisites
-  1.Python (version 3.6 or above) and pip installed on your system.
-  2.Basic knowledge of Django framework.
-  3.A Dropbox account
+- Python (version 3.6 or above) and pip installed on your system.
+- Basic knowledge of Django framework.
+- A Dropbox account.
 
 ## Installation
   1.Clone the repository or download the source code for the Django Dropbox demo app.  
